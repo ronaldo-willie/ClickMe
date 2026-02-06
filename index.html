@@ -116,6 +116,22 @@
 </head>
 
 <body>
+    <div id="startScreen" style="
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#ff758c,#ff7eb3);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    color:white;
+    font-size:24px;
+    text-align:center;
+    cursor:pointer;
+">
+    Tap to start 💕<br><br>
+    🎧
+</div>
 
 <script>
     // Floating hearts
@@ -154,7 +170,7 @@
 </div>
 
 <!-- Audio -->
-<audio id="loveSong" src="you-are-ash-b.mp3" autoplay loop></audio>
+<audio id="loveSong" src="you-are-ash-b.mp3" loop></audio>
 <audio id="iceCreamAudio" src="ice-cream-tiktok.mp3"></audio>
 
 <script>
@@ -216,6 +232,15 @@
         };
     });
 </script>
+    <script>
+    const startScreen = document.getElementById("startScreen");
+
+    startScreen.addEventListener("click", () => {
+        loveSong.play();
+        startScreen.style.display = "none";
+    });
+</script>
 
 </body>
 </html>
+

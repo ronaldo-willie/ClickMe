@@ -184,29 +184,38 @@
     let yesSize = 18;
     let playCount = 0;
 
-    noBtn.addEventListener("mouseover", () => {
+    function moveNoButton() {
         noBtn.style.left = Math.random() * 220 + "px";
         noBtn.style.top = Math.random() * 140 + "px";
 
         yesSize += 3;
         yesBtn.style.fontSize = yesSize + "px";
         yesBtn.style.padding = (14 + yesSize / 5) + "px";
+    }
+
+    // Desktop hover
+    noBtn.addEventListener("mouseover", moveNoButton);
+
+    // Mobile touch
+    noBtn.addEventListener("touchstart", (e) => {
+        e.preventDefault(); // stops accidental click
+        moveNoButton();
     });
+
+    // Extra safety (covers newer devices)
+    noBtn.addEventListener("pointerdown", moveNoButton);
 
     yesBtn.addEventListener("click", () => {
         yesBtn.style.display = "none";
         noBtn.style.display = "none";
 
-        // Stop Ash B
         loveSong.pause();
         loveSong.currentTime = 0;
 
-        // Vibrate phone (mobile)
         if (navigator.vibrate) {
             navigator.vibrate([200, 100, 200, 100, 300]);
         }
 
-        // Show messages
         message.style.display = "block";
         iceCream.style.display = "block";
 
@@ -221,7 +230,7 @@
             setTimeout(() => conf.remove(), 3000);
         }
 
-        // ICE CREAM audio loop 3 times
+        // ICE CREAM audio loops 3 times
         iceCreamAudio.play();
         iceCreamAudio.onended = () => {
             playCount++;

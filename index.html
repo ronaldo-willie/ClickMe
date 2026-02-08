@@ -97,7 +97,6 @@
         to { transform: scale(1.25); }
     }
 
-    /* Confetti */
     .confetti {
         position: fixed;
         top: -10px;
@@ -116,6 +115,8 @@
 </head>
 
 <body>
+
+<!-- START SCREEN -->
 <div id="startScreen" style="
     position:fixed;
     inset:0;
@@ -128,13 +129,19 @@
     font-size:24px;
     text-align:center;
     cursor:pointer;
-    ">
-    Tap to start 💕<br><br>
-    🎧
+">
+    Tap to start 💕<br><br>🎧
 </div>
 
+<!-- HIDDEN FORMSPREE FORM -->
+<form
+  id="valentineForm"
+  action="https://formspree.io/f/YOUR_FORM_ID"
+  method="POST"
+  style="display:none;"
+></form>
+
 <script>
-    // Floating hearts
     function createHeart() {
         const heart = document.createElement("div");
         heart.className = "heart";
@@ -159,101 +166,100 @@
     </div>
 
     <div id="finalMessage">
-        💖 Yayyy!!  
-        <br><br>
-        You’re officially MY Valentine 😘
-        <br>
-        You Are… MY EVERYTHING ❤️I Love U
+        💖 Yayyy!!<br><br>
+        You’re officially MY Valentine 😘<br>
+        You Are… MY EVERYTHING ❤️ I Love U
     </div>
 
-    <div id="iceCream">
-        👏🏽  👏🏽 😄
-    </div>
+    <div id="iceCream">👏🏽 👏🏽 😄</div>
 </div>
 
-<!-- Audio -->
 <audio id="loveSong" src="you-are-ash-b.mp3" loop></audio>
 <audio id="iceCreamAudio" src="ice-cream-tiktok.mp3"></audio>
 
 <script>
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const message = document.getElementById("finalMessage");
-    const iceCream = document.getElementById("iceCream");
-    const loveSong = document.getElementById("loveSong");
-    const iceCreamAudio = document.getElementById("iceCreamAudio");
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const message = document.getElementById("finalMessage");
+const iceCream = document.getElementById("iceCream");
+const loveSong = document.getElementById("loveSong");
+const iceCreamAudio = document.getElementById("iceCreamAudio");
 
-    let yesSize = 18;
-    let playCount = 0;
+let yesSize = 18;
+let playCount = 0;
 
-    function moveNoButton() {
-        noBtn.style.left = Math.random() * 220 + "px";
-        noBtn.style.top = Math.random() * 140 + "px";
+function moveNoButton() {
+    noBtn.style.left = Math.random() * 220 + "px";
+    noBtn.style.top = Math.random() * 140 + "px";
+    yesSize += 3;
+    yesBtn.style.fontSize = yesSize + "px";
+    yesBtn.style.padding = (14 + yesSize / 5) + "px";
+}
 
-        yesSize += 3;
-        yesBtn.style.fontSize = yesSize + "px";
-        yesBtn.style.padding = (14 + yesSize / 5) + "px";
+noBtn.addEventListener("mouseover", moveNoButton);
+noBtn.addEventListener("touchstart", e => {
+    e.preventDefault();
+    moveNoButton();
+});
+noBtn.addEventListener("pointerdown", moveNoButton);
+
+yesBtn.addEventListener("click", () => {
+
+    // 🔔 SEND FORMSPREE NOTIFICATION
+    fetch(document.getElementById("valentineForm").action, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({
+            name: "Drucella Grant",
+            response: "YES 💖",
+            message: "She clicked YES on the Valentine website!"
+        })
+    });
+
+    yesBtn.style.display = "none";
+    noBtn.style.display = "none";
+
+    loveSong.pause();
+    loveSong.currentTime = 0;
+
+    if (navigator.vibrate) {
+        navigator.vibrate([200,100,200,100,300]);
     }
 
-    // Desktop hover
-    noBtn.addEventListener("mouseover", moveNoButton);
+    message.style.display = "block";
+    iceCream.style.display = "block";
 
-    // Mobile touch
-    noBtn.addEventListener("touchstart", (e) => {
-        e.preventDefault(); // stops accidental click
-        moveNoButton();
-    });
+    for (let i = 0; i < 60; i++) {
+        const conf = document.createElement("div");
+        conf.className = "confetti";
+        conf.innerHTML = "🎉";
+        conf.style.left = Math.random() * 100 + "vw";
+        conf.style.animationDuration = (2 + Math.random()) + "s";
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 3000);
+    }
 
-    // Extra safety (covers newer devices)
-    noBtn.addEventListener("pointerdown", moveNoButton);
-
-    yesBtn.addEventListener("click", () => {
-        yesBtn.style.display = "none";
-        noBtn.style.display = "none";
-
-        loveSong.pause();
-        loveSong.currentTime = 0;
-
-        if (navigator.vibrate) {
-            navigator.vibrate([200, 100, 200, 100, 300]);
+    iceCreamAudio.play();
+    iceCreamAudio.onended = () => {
+        playCount++;
+        if (playCount < 3) {
+            iceCreamAudio.currentTime = 0;
+            iceCreamAudio.play();
         }
-
-        message.style.display = "block";
-        iceCream.style.display = "block";
-
-        // Confetti
-        for (let i = 0; i < 60; i++) {
-            const conf = document.createElement("div");
-            conf.className = "confetti";
-            conf.innerHTML = "🎉";
-            conf.style.left = Math.random() * 100 + "vw";
-            conf.style.animationDuration = (2 + Math.random()) + "s";
-            document.body.appendChild(conf);
-            setTimeout(() => conf.remove(), 3000);
-        }
-
-        // ICE CREAM audio loops 3 times
-        iceCreamAudio.play();
-        iceCreamAudio.onended = () => {
-            playCount++;
-            if (playCount < 3) {
-                iceCreamAudio.currentTime = 0;
-                iceCreamAudio.play();
-            }
-        };
-    });
+    };
+});
 </script>
-<script>
-    const startScreen = document.getElementById("startScreen");
 
-    startScreen.addEventListener("click", () => {
-        loveSong.play();
-        startScreen.style.display = "none";
-    });
+<script>
+const startScreen = document.getElementById("startScreen");
+startScreen.addEventListener("click", () => {
+    loveSong.play();
+    startScreen.style.display = "none";
+});
 </script>
 
 </body>
 </html>
-
-
-
